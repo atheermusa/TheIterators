@@ -20,6 +20,7 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
   const [journeyType, setJourneyType] = useState<string | null>(null);
   const [currentJourney, setCurrentJourney] = useState<string | null>(null);
   const startJourney = (type: string) => {
+    console.log('startJourney', type);
     setJourneyType(type);
     setIsGuided(true);
     setCurrentStep(0);
@@ -39,9 +40,11 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
       value={{
         isGuided,
         currentStep,
+    < GuidedJourneyContext.Provider
+      value={{
+        isGuided,
+        currentStep,
         journeyType,
-        currentJourney,
-        setCurrentJourney,
         startJourney,
         endJourney,
         nextStep,

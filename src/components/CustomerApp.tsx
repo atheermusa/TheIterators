@@ -9,28 +9,27 @@ import GuidedOverlay from './GuidedOverlay';
 import NotFoundPage from './NotFoundPage';
 
 const AppRoutes = () => {
-    const { isGuided } = useGuidedJourney();
+  const { isGuided } = useGuidedJourney();
+  console.log('isGuided', isGuided);
 
-    return (
-        <div className="relative h-full">
-            <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/support" element={<SupportPage />} />
-                <Route path="/cards" element={<CardPage />} />
-                <Route path="/view-pin" element={<ViewPinPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-            {isGuided && <GuidedOverlay />}
-        </div>
-    );
+  return (
+    <div className="relative h-full">
+      <Route path="/" element={<LandingPage />} />
+      <Route path="support" element={<SupportPage />} />
+      <Route path="cards" element={<CardPage />} />
+      <Route path="view-pin" element={<ViewPinPage />} />
+      <Route path="*" element={<NotFoundPage />} />
+      {isGuided && <GuidedOverlay />}
+    </div>
+  );
 };
 
 const CustomerApp = () => {
-    return (
-        <GuidedJourneyProvider>
-            <AppRoutes />
-        </GuidedJourneyProvider>
-    );
+  return (
+    <GuidedJourneyProvider>
+      <AppRoutes />
+    </GuidedJourneyProvider>
+  );
 };
 
 export default CustomerApp;

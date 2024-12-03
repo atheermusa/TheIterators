@@ -1,14 +1,11 @@
 import { Outlet } from 'react-router-dom';
-import { GuidedJourneyProvider } from '../contexts/GuidedJourneyContext';
 
 const CustomerLayout = () => {
-    return (
-        <GuidedJourneyProvider>
-            <div className="h-full">
-                <Outlet />
-            </div>
-        </GuidedJourneyProvider>
-    );
+  return (
+    <div className="h-full">
+      <Outlet />
+    </div>
+  );
 };
 
 export default CustomerLayout;

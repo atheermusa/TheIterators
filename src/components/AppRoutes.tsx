@@ -6,29 +6,36 @@ import SupportPage from './SupportPage';
 import CardPage from './CardPage';
 import ViewPinPage from './ViewPinPage';
 import NotFoundPage from './NotFoundPage';
-
+import GuidedOverlay from './GuidedOverlay';
+import { useGuidedJourney } from '../contexts/GuidedJourneyContext';
 const AppRoutes = () => {
-    return (
-        <Routes>
-            {/* Customer Routes */}
-            <Route element={<CustomerLayout />}>
-                <Route index element={<LandingPage />} />
-                <Route path="support" element={<SupportPage />} />
-                <Route path="cards" element={<CardPage />} />
-                <Route path="view-pin" element={<ViewPinPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-            </Route>
+  const { isGuided } = useGuidedJourney();
+  console.log('isGuided', isGuided);
+  return (
+    <div>
+      <Routes>
+        {/* Customer Routes */}
+        <Route element={<CustomerLayout />}>
+          <Route index element={<LandingPage />} />
+          <Route path="support" element={<SupportPage />} />
+          <Route path="cards" element={<CardPage />} />
+          <Route path="view-pin" element={<ViewPinPage />} />
+          <Route path="*" element={<NotFoundPage />} />
 
-            {/* Agent Routes */}
-            <Route path="agent" element={<AgentLayout />}>
-                <Route index element={<LandingPage />} />
-                <Route path="support" element={<SupportPage />} />
-                <Route path="cards" element={<CardPage />} />
-                <Route path="view-pin" element={<ViewPinPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-            </Route>
-        </Routes>
-    );
+        </Route>
+
+        {/* Agent Routes */}
+        <Route path="agent" element={<AgentLayout />}>
+          <Route index element={<LandingPage />} />
+          <Route path="support" element={<SupportPage />} />
+          <Route path="cards" element={<CardPage />} />
+          <Route path="view-pin" element={<ViewPinPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes >
+      {isGuided && <GuidedOverlay />}
+    </div>
+  );
 };
 
 export default AppRoutes;
