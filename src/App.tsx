@@ -1,4 +1,3 @@
-// App.tsx
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './components/AppRoutes';
 
