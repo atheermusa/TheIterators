@@ -386,11 +386,27 @@ const AgentLayout = () => {
                             <h3 className="text-sm font-medium text-gray-500 mb-2">Suggested Journeys</h3>
                             <div className="space-y-2">
                                 <div className="p-3 border rounded-md bg-purple-50 border-purple-200">
-                                    <h4 className="font-medium">View PIN Journey</h4>
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h4 className="font-medium">View PIN Journey</h4>
+                                        <button
+                                            onClick={() => console.log('Sending View PIN Journey')}
+                                            className="flex items-center justify-center w-8 h-8 text-purple-600 rounded-full hover:underline"
+                                        >
+                                            →
+                                        </button>
+                                    </div>
                                     <p className="text-sm text-gray-600">Based on customer's recent card activation</p>
                                 </div>
                                 <div className="p-3 border rounded-md bg-purple-50 border-purple-200">
-                                    <h4 className="font-medium">Set Up Direct Debit</h4>
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h4 className="font-medium">Set Up Direct Debit</h4>
+                                        <button
+                                            onClick={() => console.log('Sending Direct Debit Journey')}
+                                            className="flex items-center justify-center w-8 h-8 text-purple-600 rounded-full hover:underline"
+                                        >
+                                            →
+                                        </button>
+                                    </div>
                                     <p className="text-sm text-gray-600">Customer mentioned bill payments</p>
                                 </div>
                             </div>
@@ -401,11 +417,19 @@ const AgentLayout = () => {
                             {filteredJourneys.map(journey => (
                                 <div
                                     key={journey.id}
-                                    className="p-3 border rounded-md hover:bg-gray-50 cursor-pointer"
+                                    className="p-3 border rounded-md hover:bg-gray-50"
                                 >
-                                    <h3 className="font-medium">{journey.title}</h3>
-                                    <p className="text-sm text-gray-600">{journey.description}</p>
-                                    <div className="flex flex-wrap gap-1 mt-1">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h3 className="font-medium">{journey.title}</h3>
+                                        <button
+                                            onClick={() => console.log(`Sending journey: ${journey.title}`)}
+                                            className="flex items-center justify-center w-8 h-8 text-black rounded-full hover:underline"
+                                        >
+                                            →
+                                        </button>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mb-2">{journey.description}</p>
+                                    <div className="flex flex-wrap gap-1">
                                         {journey.tags.map(tag => (
                                             <span
                                                 key={tag}
@@ -439,7 +463,7 @@ const AgentLayout = () => {
                                             onClick={handleSubmitJourney}
                                             className="flex-1 px-4 py-2 bg-green text-white rounded-md hover:bg-green-600 text-sm"
                                         >
-                                            Submit Journey
+                                            Send Journey
                                         </button>
                                         <button
                                             onClick={handleDiscardJourney}
