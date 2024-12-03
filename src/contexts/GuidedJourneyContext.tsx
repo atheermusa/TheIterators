@@ -40,15 +40,13 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
       value={{
         isGuided,
         currentStep,
-    < GuidedJourneyContext.Provider
-      value={{
-        isGuided,
-        currentStep,
         journeyType,
+        currentJourney,
         startJourney,
         endJourney,
         nextStep,
-        previousStep
+        previousStep,
+        setCurrentJourney
       }}
     >
       {children}
