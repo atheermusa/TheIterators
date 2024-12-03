@@ -25,7 +25,7 @@ jobs:
       run: npm run build
         
     - name: Login to Azure
-      uses: Azure/login@v2.2.0
+      uses: Azure/login@v2
       with:
         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_23135622A09F48A9A196C5AF7F9154F9 }}
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_77EE54BE3E1346E38CAEECE633983B8C }}
