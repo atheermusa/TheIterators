@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+@font-face {
+    font-family: "GT Ultra Standard";
+    src: url("./assets/fonts/GT-Ultra-Standard-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "GT Ultra Standard";
+    src: url("./assets/fonts/GT-Ultra-Standard-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "GT Ultra Median";
+    src: url("./assets/fonts/GT-Ultra-Median-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "GT Ultra Median";
+    src: url("./assets/fonts/GT-Ultra-Median-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+}
+
+body {
+    @apply font-sans;
+}
