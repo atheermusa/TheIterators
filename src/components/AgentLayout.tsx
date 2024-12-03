@@ -33,6 +33,8 @@ const AgentLayout = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [journeySteps, setJourneySteps] = useState<JourneyStep[]>([]);
     const [currentInstruction, setCurrentInstruction] = useState('');
+    const [stepIndex, setStepIndex] = useState(0);
+    const [hasCompletedRecording, setHasCompletedRecording] = useState(false);
 
     // Mocked customer details
     const customerDetails: CustomerDetails = {
@@ -59,26 +61,57 @@ const AgentLayout = () => {
         journey.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
+
+    const mockedSteps: JourneyStep[] = [
+        {
+            pageId: 'HomeScreen',
+            elementId: 'cardButton',
+            instructions: 'Click on the Card button in the bottom navigation bar',
+            timestamp: new Date().toISOString()
+        },
+        {
+            pageId: 'CardScreen',
+            elementId: 'viewPinButton',
+            instructions: 'Locate and click the "View PIN" button on your card details',
+            timestamp: new Date().toISOString()
+        },
+        {
+            pageId: 'PinScreen',
+            elementId: 'showPinButton',
+            instructions: 'Click "Show PIN" to reveal your card PIN',
+            timestamp: new Date().toISOString()
+        }
+    ];
+
     const startRecording = () => {
         setIsRecording(true);
+        setStepIndex(0);
         setJourneySteps([]);
     };
 
-    const stopRecording = () => {
-        setIsRecording(false);
-        // Here you could save the journey steps to your backend
-        console.log('Recorded journey:', journeySteps);
+    const addJourneyStep = () => {
+        if (stepIndex < mockedSteps.length) {
+            setJourneySteps([...journeySteps, mockedSteps[stepIndex]]);
+            setStepIndex(stepIndex + 1);
+            setCurrentInstruction('');
+        }
     };
 
-    const addJourneyStep = (pageId: string, elementId: string) => {
-        const newStep: JourneyStep = {
-            pageId,
-            elementId,
-            instructions: currentInstruction,
-            timestamp: new Date().toISOString()
-        };
-        setJourneySteps([...journeySteps, newStep]);
-        setCurrentInstruction(''); // Reset instruction input
+
+    const stopRecording = () => {
+        setIsRecording(false);
+        setHasCompletedRecording(true);
+    };
+
+    const handleSubmitJourney = () => {
+        console.log('Submitting journey:', journeySteps);
+        setHasCompletedRecording(false);
+        setJourneySteps([]);
+    };
+
+    const handleDiscardJourney = () => {
+        setHasCompletedRecording(false);
+        setJourneySteps([]);
     };
 
     return (
@@ -118,14 +151,34 @@ const AgentLayout = () => {
             </div>
 
             {/* Journey Recording Panel - Only visible when recording */}
-            {isRecording && (
+            {(isRecording || hasCompletedRecording) && (
                 <div className="w-80 bg-white p-4 border-r border-gray-200 overflow-y-auto">
                     <div className="mb-4">
-                        <h2 className="text-lg font-bold mb-2">Recording Journey</h2>
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                            <span className="text-sm text-gray-600">Recording in progress...</span>
-                        </div>
+                        <h2 className="text-lg font-bold mb-2">
+                            {isRecording ? 'Recording Journey' : 'Recording Complete'}
+                        </h2>
+                        {isRecording && (
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                                <span className="text-sm text-gray-600">Recording in progress...</span>
+                            </div>
+                        )}
+                        {hasCompletedRecording && (
+                            <div className="flex gap-2 mb-4">
+                                <button
+                                    onClick={handleSubmitJourney}
+                                    className="flex-1 px-4 py-2 bg-green text-white rounded-md hover:bg-green-600 text-sm"
+                                >
+                                    Submit Journey
+                                </button>
+                                <button
+                                    onClick={handleDiscardJourney}
+                                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm"
+                                >
+                                    Discard
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* Instructions Input */}
@@ -173,9 +226,9 @@ const AgentLayout = () => {
                 </button>
                 <div className="w-[390px] h-[844px] bg-white rounded-3xl overflow-hidden shadow-2xl">
                     <SimulatorProvider
-                        onInteraction={(pageId, elementId) => {
+                        onInteraction={() => {
                             if (isRecording) {
-                                addJourneyStep(pageId, elementId);
+                                addJourneyStep();
                             }
                         }}
                     >

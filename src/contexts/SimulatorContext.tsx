@@ -1,7 +1,7 @@
 import { createContext, useContext, ReactNode } from 'react';
 
 interface SimulatorContextType {
-    recordInteraction: (pageId: string, elementId: string) => void;
+    recordInteraction: (pageId?: string, elementId?: string) => void;
 }
 
 const SimulatorContext = createContext<SimulatorContextType | undefined>(undefined);
@@ -11,15 +11,21 @@ export const SimulatorProvider = ({
     onInteraction
 }: {
     children: ReactNode;
-    onInteraction: (pageId: string, elementId: string) => void;
+    onInteraction: (pageId?: string, elementId?: string) => void;
 }) => {
-    const recordInteraction = (pageId: string, elementId: string) => {
+    const recordInteraction = (pageId?: string, elementId?: string) => {
         onInteraction(pageId, elementId);
+    };
+
+    const handleClick = () => {
+        recordInteraction();
     };
 
     return (
         <SimulatorContext.Provider value={{ recordInteraction }}>
-            {children}
+            <div onClick={handleClick} style={{ height: '100%' }}>
+                {children}
+            </div>
         </SimulatorContext.Provider>
     );
 };
