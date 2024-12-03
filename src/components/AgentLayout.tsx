@@ -324,10 +324,10 @@ const AgentLayout = () => {
     };
 
     const mockScreenshots = [
-        "/screenshots/home.png",
-        "/screenshots/cards.png",
-        "/screenshots/view-pin.png",
-        "/screenshots/pin.png",
+        "/home.png",
+        "/cards.png",
+        "/view-pin.png",
+        "/pin.png",
     ];
 
     const handleNextImage = () => {
