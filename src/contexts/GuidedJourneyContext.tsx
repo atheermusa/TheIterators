@@ -74,10 +74,13 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
   const [hasTakenTour, setHasTakenTour] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [hasBeenYes, setHasBeenYes] = useState(false);
   const pollActiveStatus = async () => {
+    if (hasBeenYes) {
+      return
+    }
     try {
-      const response = await fetch(`https://apphelp-cugtbgavhge7eqbn.uksouth-01.azurewebsites.net/status/adam/journey/adam`);
+      const response = await fetch(`https://apphelp-cugtbgavhge7eqbn.uksouth-01.azurewebsites.net/status/adam`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch active status');
@@ -85,6 +88,7 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
       const data: PollResponse = await response.json();
       console.log('data', data);
       if (data.active === 'true') {
+        setHasBeenYes(true)
         setIsGuided(true);
         startJourney('view-pin');
       }
