@@ -1,4 +1,4 @@
-import Joyride, { CallBackProps, STATUS } from 'react-joyride';
+import Joyride, { CallBackProps, STATUS, EVENTS } from 'react-joyride';
 import { useGuidedJourney } from '../contexts/GuidedJourneyContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -38,13 +38,18 @@ const GuidedOverlay = () => {
     const { action, index, status, type } = data;
     console.log({ data });
 
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+    // Handle all possible end states
+    if ((data.index === 2 && data.lifecycle === 'complete') || [STATUS.FINISHED, STATUS.SKIPPED].includes(status as any) ||
+      type === EVENTS.TOUR_END ||
+      action === 'close' ||
+      type === EVENTS.TARGET_NOT_FOUND) {
+      console.log('Ending journey...');
       markTourComplete();
       endJourney();
       return;
     }
 
-    if (type === 'step:after' && journeyType === 'view-pin') {
+    if (type === EVENTS.STEP_AFTER && journeyType === 'view-pin') {
       switch (index) {
         case 0:
           setTimeout(() => {
@@ -91,6 +96,7 @@ const GuidedOverlay = () => {
   return (
     <Joyride
       steps={steps}
+      disableScrolling={true}
       stepIndex={stepIndex}
       continuous={true}
       showProgress
@@ -102,6 +108,10 @@ const GuidedOverlay = () => {
           primaryColor: '#000',
           zIndex: 1000,
         },
+      }}
+      floaterProps={{
+        disableAnimation: true,
+        hideArrow: false,
       }}
       callback={handleJoyrideCallback}
     />

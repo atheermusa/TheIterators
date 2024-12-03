@@ -13,8 +13,8 @@ const AppRoutes = () => {
   const { isGuided } = useGuidedJourney();
   console.log('isGuided', isGuided);
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex-1">
+    <div className="relative min-h-screen">
+      <div className="pb-16">
         <Routes>
           {/* Customer Routes */}
           <Route element={<CustomerLayout />}>
@@ -35,7 +35,9 @@ const AppRoutes = () => {
           </Route>
         </Routes>
       </div>
-      <FooterNav />
+      <div className="fixed bottom-0 left-0 right-0 bg-white">
+        <FooterNav />
+      </div>
     </div>
   );
 };
