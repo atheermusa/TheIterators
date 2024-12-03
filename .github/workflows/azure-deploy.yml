@@ -25,12 +25,11 @@ jobs:
       run: npm run build
         
     - name: Login to Azure
-      uses: azure/login@v1
+      uses: Azure/login@v2.2.0
       with:
         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_23135622A09F48A9A196C5AF7F9154F9 }}
         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_77EE54BE3E1346E38CAEECE633983B8C }}
         subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_909FD4DD80014782B7670ED1BD33CF59 }}
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
