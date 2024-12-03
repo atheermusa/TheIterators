@@ -88,14 +88,10 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
     setError(null);
 
     try {
-      if (type === 'view-pin') {
-        // For demo journey, use local steps
-        setSteps(journeySteps[type] || []);
-      } else {
-        // For other journeys, fetch from API
-        const data = await fetchJourneyData(type);
-        setSteps(data.steps);
-      }
+      setSteps(journeySteps[type] || []);
+      // For other journeys, fetch from API
+      const data = await fetchJourneyData(type);
+      setSteps(data['view-pin']);
 
       setJourneyType(type);
       setIsGuided(true);
