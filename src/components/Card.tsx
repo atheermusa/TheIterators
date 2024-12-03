@@ -17,6 +17,7 @@ type AccountCardProps = BaseCardProps & {
     icon?: string;
     accountNumber?: string;
     balance: string;
+    id?: string;
 };
 
 type CardProps = SpaceCardProps | AccountCardProps;

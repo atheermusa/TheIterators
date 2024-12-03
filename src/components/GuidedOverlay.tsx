@@ -31,13 +31,11 @@ const GuidedOverlay = () => {
       }
     ]
   };
-
   console.log('GuidedOverlay rendered with journey:', currentJourney);
-  console.log('Steps:', journeySteps[currentJourney] || []);
+  console.log('Steps:', journeySteps[currentJourney ?? ''] || []);
 
   const handleJoyrideCallback = (data: CallBackProps) => {
-    console.log(data)
-    console.log('HI!')
+    console.log(data);
     const { status, type } = data;
     if (status === 'finished' || status === 'skipped') {
       endJourney();
@@ -46,7 +44,7 @@ const GuidedOverlay = () => {
 
   return (
     <Joyride
-      steps={journeySteps[currentJourney] || []}
+      steps={journeySteps[currentJourney ?? ''] || []}
       continuous
       showProgress
       showSkipButton

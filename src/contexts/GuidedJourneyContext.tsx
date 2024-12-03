@@ -4,10 +4,12 @@ interface GuidedJourneyContextType {
   isGuided: boolean;
   currentStep: number;
   journeyType: string | null;
+  currentJourney: string | null;
   startJourney: (type: string) => void;
   endJourney: () => void;
   nextStep: () => void;
   previousStep: () => void;
+  setCurrentJourney: (journey: string) => void;
 }
 
 const GuidedJourneyContext = createContext<GuidedJourneyContextType | undefined>(undefined);
@@ -16,7 +18,7 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
   const [isGuided, setIsGuided] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [journeyType, setJourneyType] = useState<string | null>(null);
-
+  const [currentJourney, setCurrentJourney] = useState<string | null>(null);
   const startJourney = (type: string) => {
     setJourneyType(type);
     setIsGuided(true);
@@ -33,15 +35,17 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
   const previousStep = () => setCurrentStep(prev => prev - 1);
 
   return (
-    <GuidedJourneyContext.Provider 
-      value={{ 
-        isGuided, 
-        currentStep, 
+    <GuidedJourneyContext.Provider
+      value={{
+        isGuided,
+        currentStep,
         journeyType,
-        startJourney, 
-        endJourney, 
-        nextStep, 
-        previousStep 
+        currentJourney,
+        setCurrentJourney,
+        startJourney,
+        endJourney,
+        nextStep,
+        previousStep
       }}
     >
       {children}
