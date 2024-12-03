@@ -7,13 +7,21 @@ interface GuidedJourneyContextType {
   journeyType: string | null;
   steps: Step[];
   hasTakenTour: boolean;
-  startJourney: (type: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  startJourney: (type: string) => Promise<void>;
   endJourney: () => void;
   setStepIndex: (index: number) => void;
   markTourComplete: () => void;
 }
 
 const TOUR_COMPLETED_KEY = 'guided_tour_completed';
+const API_BASE_URL = import.meta.env.VITE_APP_BE;
+
+interface JourneyData {
+  steps: Step[];
+  // Add other fields from your API response here
+}
 
 const journeySteps: Record<string, Step[]> = {
   'view-pin': [
@@ -57,14 +65,47 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
   const [stepIndex, setStepIndex] = useState(0);
   const [journeyType, setJourneyType] = useState<string | null>(null);
   const [steps, setSteps] = useState<Step[]>([]);
-  const [hasTakenTour, setHasTakenTour] = useState(false)
+  const [hasTakenTour, setHasTakenTour] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const startJourney = (type: string) => {
+  const fetchJourneyData = async (type: string): Promise<JourneyData> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/journey/adam`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch journey data');
+      }
+      return response.json();
+    } catch (err) {
+      console.error('Error fetching journey data:', err);
+      throw err;
+    }
+  };
+
+  const startJourney = async (type: string) => {
     console.log('startJourney', type);
-    setJourneyType(type);
-    setIsGuided(true);
-    setStepIndex(0);
-    setSteps(journeySteps[type] || []);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      if (type === 'view-pin') {
+        // For demo journey, use local steps
+        setSteps(journeySteps[type] || []);
+      } else {
+        // For other journeys, fetch from API
+        const data = await fetchJourneyData(type);
+        setSteps(data.steps);
+      }
+
+      setJourneyType(type);
+      setIsGuided(true);
+      setStepIndex(0);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Error starting journey:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const endJourney = () => {
@@ -73,6 +114,7 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
     setJourneyType(null);
     setStepIndex(0);
     setSteps([]);
+    setError(null);
   };
 
   const markTourComplete = () => {
@@ -88,6 +130,8 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
         journeyType,
         steps,
         hasTakenTour,
+        isLoading,
+        error,
         startJourney,
         endJourney,
         setStepIndex,

@@ -10,7 +10,7 @@ import { useAgentNavigation } from "../hooks/useAgentNavigagtion";
 
 const SupportPage = () => {
   const navigate = useAgentNavigation();
-  const { startJourney } = useGuidedJourney();
+  const { startJourney, isLoading, error } = useGuidedJourney();
   const [showDialog, setShowDialog] = useState(false);
   const [selectedJourney, setSelectedJourney] = useState('');
 
@@ -19,14 +19,20 @@ const SupportPage = () => {
     setShowDialog(true);
   };
 
-  const startGuidedJourney = () => {
+  const startGuidedJourney = async () => {
     console.log('startGuidedJourney', selectedJourney);
     setShowDialog(false);
-    startJourney(selectedJourney);
-    if (selectedJourney === 'view-pin') {
-      setTimeout(() => {
-        navigate('/');
-      }, 100);
+
+    try {
+      await startJourney(selectedJourney);
+      if (selectedJourney === 'view-pin') {
+        setTimeout(() => {
+          navigate('/');
+        }, 100);
+      }
+    } catch (err) {
+      console.error('Failed to start journey:', err);
+      // Error is handled by GuidedJourneyContext
     }
   };
 
@@ -96,12 +102,18 @@ const SupportPage = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Guided Journeys</h2>
               <button
-                className="bg-black text-white px-4 py-2 rounded-md text-sm"
+                className={`bg-black text-white px-4 py-2 rounded-md text-sm ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 onClick={() => handleJourneyStart('view-pin')}
+                disabled={isLoading}
               >
-                Start Demo Journey
+                {isLoading ? 'Loading...' : 'Start Demo Journey'}
               </button>
             </div>
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                {error}
+              </div>
+            )}
             <div className="space-y-3">
               <Accordion
                 title="Order a replacement card"
