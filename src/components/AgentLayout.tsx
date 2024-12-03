@@ -27,6 +27,11 @@ interface JourneyStep {
     timestamp: string;
 }
 
+interface CaseStatus {
+    isActive: boolean;
+    isSearching: boolean;
+}
+
 const AgentLayout = () => {
     const [caseNotes, setCaseNotes] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -35,6 +40,10 @@ const AgentLayout = () => {
     const [currentInstruction, setCurrentInstruction] = useState('');
     const [stepIndex, setStepIndex] = useState(0);
     const [hasCompletedRecording, setHasCompletedRecording] = useState(false);
+    const [caseStatus, setCaseStatus] = useState<CaseStatus>({
+        isActive: true,
+        isSearching: false
+    });
 
     // Mocked customer details
     const customerDetails: CustomerDetails = {
@@ -54,6 +63,180 @@ const AgentLayout = () => {
             description: 'Help customer order a replacement card',
             tags: ['card', 'lost', 'stolen', 'damaged']
         },
+        {
+            id: 'update-address',
+            title: 'Update Address',
+            description: 'Guide customer through updating their address',
+            tags: ['address', 'update', 'change']
+        },
+        {
+            id: 'reset-password',
+            title: 'Reset Password',
+            description: 'Assist customer in resetting their account password',
+            tags: ['password', 'reset', 'security']
+        },
+        {
+            id: 'activate-card',
+            title: 'Activate Card',
+            description: 'Help customer activate their new card',
+            tags: ['card', 'activate', 'new']
+        },
+        {
+            id: 'check-balance',
+            title: 'Check Balance',
+            description: 'Guide customer to check their account balance',
+            tags: ['balance', 'account', 'check']
+        },
+        {
+            id: 'transfer-funds',
+            title: 'Transfer Funds',
+            description: 'Assist customer in transferring funds between accounts',
+            tags: ['transfer', 'funds', 'accounts']
+        },
+        {
+            id: 'set-up-direct-debit',
+            title: 'Set Up Direct Debit',
+            description: 'Guide customer through setting up a direct debit',
+            tags: ['direct debit', 'setup', 'payment']
+        },
+        {
+            id: 'order-cheque-book',
+            title: 'Order Cheque Book',
+            description: 'Help customer order a new cheque book',
+            tags: ['cheque', 'order', 'book']
+        },
+        {
+            id: 'report-fraud',
+            title: 'Report Fraud',
+            description: 'Assist customer in reporting fraudulent activity',
+            tags: ['fraud', 'report', 'security']
+        },
+        {
+            id: 'apply-loan',
+            title: 'Apply for Loan',
+            description: 'Guide customer through the loan application process',
+            tags: ['loan', 'apply', 'finance']
+        },
+        {
+            id: 'open-savings-account',
+            title: 'Open Savings Account',
+            description: 'Help customer open a new savings account',
+            tags: ['savings', 'account', 'open']
+        },
+        {
+            id: 'close-account',
+            title: 'Close Account',
+            description: 'Assist customer in closing their account',
+            tags: ['account', 'close', 'terminate']
+        },
+        {
+            id: 'update-contact-info',
+            title: 'Update Contact Info',
+            description: 'Guide customer through updating their contact information',
+            tags: ['contact', 'update', 'info']
+        },
+        {
+            id: 'set-up-online-banking',
+            title: 'Set Up Online Banking',
+            description: 'Help customer set up online banking access',
+            tags: ['online banking', 'setup', 'access']
+        },
+        {
+            id: 'apply-credit-card',
+            title: 'Apply for Credit Card',
+            description: 'Guide customer through the credit card application process',
+            tags: ['credit card', 'apply', 'finance']
+        },
+        {
+            id: 'dispute-transaction',
+            title: 'Dispute Transaction',
+            description: 'Assist customer in disputing a transaction',
+            tags: ['transaction', 'dispute', 'issue']
+        },
+        {
+            id: 'set-up-alerts',
+            title: 'Set Up Alerts',
+            description: 'Guide customer through setting up account alerts',
+            tags: ['alerts', 'setup', 'notifications']
+        },
+        {
+            id: 'update-beneficiaries',
+            title: 'Update Beneficiaries',
+            description: 'Help customer update their account beneficiaries',
+            tags: ['beneficiaries', 'update', 'account']
+        },
+        {
+            id: 'request-statement',
+            title: 'Request Statement',
+            description: 'Assist customer in requesting an account statement',
+            tags: ['statement', 'request', 'account']
+        },
+        {
+            id: 'set-up-budget',
+            title: 'Set Up Budget',
+            description: 'Guide customer through setting up a budget',
+            tags: ['budget', 'setup', 'finance']
+        },
+        {
+            id: 'apply-mortgage',
+            title: 'Apply for Mortgage',
+            description: 'Help customer apply for a mortgage',
+            tags: ['mortgage', 'apply', 'finance']
+        },
+        {
+            id: 'report-lost-card',
+            title: 'Report Lost Card',
+            description: 'Assist customer in reporting a lost card',
+            tags: ['card', 'lost', 'report']
+        },
+        {
+            id: 'set-up-auto-pay',
+            title: 'Set Up Auto Pay',
+            description: 'Guide customer through setting up automatic payments',
+            tags: ['auto pay', 'setup', 'payments']
+        },
+        {
+            id: 'update-security-questions',
+            title: 'Update Security Questions',
+            description: 'Help customer update their security questions',
+            tags: ['security', 'update', 'questions']
+        },
+        {
+            id: 'apply-personal-loan',
+            title: 'Apply for Personal Loan',
+            description: 'Guide customer through the personal loan application process',
+            tags: ['personal loan', 'apply', 'finance']
+        },
+        {
+            id: 'order-replacement-card',
+            title: 'Order Replacement Card',
+            description: 'Assist customer in ordering a replacement card',
+            tags: ['card', 'replacement', 'order']
+        },
+        {
+            id: 'set-up-savings-goal',
+            title: 'Set Up Savings Goal',
+            description: 'Guide customer through setting up a savings goal',
+            tags: ['savings', 'goal', 'setup']
+        },
+        {
+            id: 'update-email',
+            title: 'Update Email',
+            description: 'Help customer update their email address',
+            tags: ['email', 'update', 'contact']
+        },
+        {
+            id: 'apply-business-loan',
+            title: 'Apply for Business Loan',
+            description: 'Guide customer through the business loan application process',
+            tags: ['business loan', 'apply', 'finance']
+        },
+        {
+            id: 'report-unauthorized-access',
+            title: 'Report Unauthorized Access',
+            description: 'Assist customer in reporting unauthorized account access',
+            tags: ['unauthorized', 'access', 'report']
+        }
     ];
 
     const filteredJourneys = journeys.filter(journey =>
@@ -114,181 +297,226 @@ const AgentLayout = () => {
         setJourneySteps([]);
     };
 
+    const handleStartSearching = () => {
+        setCaseStatus({ isActive: false, isSearching: true });
+        // Simulate API call
+        setTimeout(() => {
+            setCaseStatus({ isActive: true, isSearching: false });
+        }, 2000);
+    };
+
+    const handleCompleteCase = () => {
+        setCaseStatus({ isActive: false, isSearching: false });
+        // Reset all relevant state
+        setCaseNotes('');
+        setJourneySteps([]);
+        setHasCompletedRecording(false);
+    };
+
     return (
         <div className="flex h-screen bg-gray-100">
+            {caseStatus.isSearching ? (
+                // Loading State
+                <div className="flex-1 flex flex-col items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                    <p className="mt-4 text-lg text-gray-600">Searching for next case...</p>
+                </div>
+            ) : !caseStatus.isActive ? (
+                // No Active Case State
+                <div className="flex-1 flex flex-col items-center justify-center">
+                    <h2 className="text-2xl font-bold text-gray-700 mb-4">No Active Case</h2>
+                    <button
+                        onClick={handleStartSearching}
+                        className="px-6 py-3 bg-green text-white rounded-md hover:underline"
+                    >
+                        Start Searching
+                    </button>
+                </div>
+            ) : (
+                // Existing Layout - wrap in fragment
+                <>
+                    {/* Left Panel */}
+                    <div className="w-72 bg-white p-4 border-r border-gray-200 overflow-y-auto">
+                        <h2 className="text-lg font-bold mb-4">Available Journeys</h2>
+                        <input
+                            type="text"
+                            placeholder="Search journeys..."
+                            className="w-full p-2 border rounded-md mb-4"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <div className="space-y-2">
+                            {filteredJourneys.map(journey => (
+                                <div
+                                    key={journey.id}
+                                    className="p-3 border rounded-md hover:bg-gray-50 cursor-pointer"
+                                >
+                                    <h3 className="font-medium">{journey.title}</h3>
+                                    <p className="text-sm text-gray-600">{journey.description}</p>
+                                    <div className="flex flex-wrap gap-1 mt-1">
+                                        {journey.tags.map(tag => (
+                                            <span
+                                                key={tag}
+                                                className="text-xs bg-gray-200 px-2 py-1 rounded-full"
+                                            >
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
 
-            {/* Left Panel - Journey List */}
-            <div className="w-72 bg-white p-4 border-r border-gray-200 overflow-y-auto">
-                <h2 className="text-lg font-bold mb-4">Available Journeys</h2>
-                <input
-                    type="text"
-                    placeholder="Search journeys..."
-                    className="w-full p-2 border rounded-md mb-4"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <div className="space-y-2">
-                    {filteredJourneys.map(journey => (
-                        <div
-                            key={journey.id}
-                            className="p-3 border rounded-md hover:bg-gray-50 cursor-pointer"
-                        >
-                            <h3 className="font-medium">{journey.title}</h3>
-                            <p className="text-sm text-gray-600">{journey.description}</p>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                                {journey.tags.map(tag => (
-                                    <span
-                                        key={tag}
-                                        className="text-xs bg-gray-200 px-2 py-1 rounded-full"
-                                    >
-                                        {tag}
-                                    </span>
+                    {/* Journey Recording Panel */}
+                    {(isRecording || hasCompletedRecording) && (
+                        <div className="w-80 bg-white p-4 border-r border-gray-200 overflow-y-auto">
+                            <div className="mb-4">
+                                <h2 className="text-lg font-bold mb-2">
+                                    {isRecording ? 'Recording Journey' : 'Recording Complete'}
+                                </h2>
+                                {isRecording && (
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                                        <span className="text-sm text-gray-600">Recording in progress...</span>
+                                    </div>
+                                )}
+                                {hasCompletedRecording && (
+                                    <div className="flex gap-2 mb-4">
+                                        <button
+                                            onClick={handleSubmitJourney}
+                                            className="flex-1 px-4 py-2 bg-green text-white rounded-md hover:bg-green-600 text-sm"
+                                        >
+                                            Submit Journey
+                                        </button>
+                                        <button
+                                            onClick={handleDiscardJourney}
+                                            className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm"
+                                        >
+                                            Discard
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Instructions Input */}
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Next Step Instructions
+                                </label>
+                                <textarea
+                                    className="w-full p-2 border rounded-md text-sm"
+                                    rows={3}
+                                    value={currentInstruction}
+                                    onChange={(e) => setCurrentInstruction(e.target.value)}
+                                    placeholder="Enter instructions for the next step..."
+                                />
+                            </div>
+
+                            {/* Recorded Steps */}
+                            <div className="space-y-3">
+                                <h3 className="font-medium">Recorded Steps</h3>
+                                {journeySteps.map((step, index) => (
+                                    <div key={index} className="p-3 bg-gray-50 rounded-md text-sm">
+                                        <div className="flex justify-between text-xs text-gray-500 mb-1">
+                                            <span>Page: {step.pageId}</span>
+                                            <span>Element: {step.elementId}</span>
+                                        </div>
+                                        {step.instructions && (
+                                            <p className="text-gray-700">{step.instructions}</p>
+                                        )}
+                                    </div>
                                 ))}
                             </div>
                         </div>
-                    ))}
-                </div>
-            </div>
+                    )}
 
-            {/* Journey Recording Panel - Only visible when recording */}
-            {(isRecording || hasCompletedRecording) && (
-                <div className="w-80 bg-white p-4 border-r border-gray-200 overflow-y-auto">
-                    <div className="mb-4">
-                        <h2 className="text-lg font-bold mb-2">
-                            {isRecording ? 'Recording Journey' : 'Recording Complete'}
-                        </h2>
-                        {isRecording && (
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                                <span className="text-sm text-gray-600">Recording in progress...</span>
-                            </div>
-                        )}
-                        {hasCompletedRecording && (
-                            <div className="flex gap-2 mb-4">
-                                <button
-                                    onClick={handleSubmitJourney}
-                                    className="flex-1 px-4 py-2 bg-green text-white rounded-md hover:bg-green-600 text-sm"
-                                >
-                                    Submit Journey
-                                </button>
-                                <button
-                                    onClick={handleDiscardJourney}
-                                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm"
-                                >
-                                    Discard
-                                </button>
-                            </div>
-                        )}
+                    {/* Center - Customer App */}
+                    <div className="flex-1 flex flex-col items-center bg-gray p-4">
+                        <div className="flex gap-2 mb-4">
+                            <button
+                                onClick={isRecording ? stopRecording : startRecording}
+                                className={`px-4 py-2 rounded-md text-sm font-medium ${isRecording
+                                    ? 'bg-red-500 text-white hover:bg-red-600'
+                                    : 'bg-red-500 text-white hover:bg-red-600'
+                                    }`}
+                            >
+                                {isRecording ? 'Stop Recording' : 'Record Journey'}
+                            </button>
+                            <button
+                                onClick={handleCompleteCase}
+                                className="px-4 py-2 text-black rounded-md hover:underline text-sm font-medium"
+                            >
+                                Complete Case
+                            </button>
+                        </div>
+                        <div className="w-[390px] h-[844px] bg-white rounded-3xl overflow-hidden shadow-2xl">
+                            <SimulatorProvider
+                                onInteraction={() => {
+                                    if (isRecording) {
+                                        addJourneyStep();
+                                    }
+                                }}
+                            >
+                                <GuidedJourneyProvider>
+                                    <Outlet />
+                                </GuidedJourneyProvider>
+                            </SimulatorProvider>
+                        </div>
                     </div>
 
-                    {/* Instructions Input */}
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Next Step Instructions
-                        </label>
-                        <textarea
-                            className="w-full p-2 border rounded-md text-sm"
-                            rows={3}
-                            value={currentInstruction}
-                            onChange={(e) => setCurrentInstruction(e.target.value)}
-                            placeholder="Enter instructions for the next step..."
-                        />
-                    </div>
-
-                    {/* Recorded Steps */}
-                    <div className="space-y-3">
-                        <h3 className="font-medium">Recorded Steps</h3>
-                        {journeySteps.map((step, index) => (
-                            <div key={index} className="p-3 bg-gray-50 rounded-md text-sm">
-                                <div className="flex justify-between text-xs text-gray-500 mb-1">
-                                    <span>Page: {step.pageId}</span>
-                                    <span>Element: {step.elementId}</span>
+                    {/* Right Panel - Customer Details and Case Notes */}
+                    <div className="w-72 bg-white p-4 border-l border-gray-200 overflow-y-auto">
+                        {/* Customer Details Section */}
+                        <div className="mb-6">
+                            <h2 className="text-lg font-bold mb-4">Customer Details</h2>
+                            <div className="space-y-3">
+                                <div>
+                                    <h3 className="text-sm text-gray-500">Name</h3>
+                                    <p className="font-medium">{customerDetails.name}</p>
                                 </div>
-                                {step.instructions && (
-                                    <p className="text-gray-700">{step.instructions}</p>
-                                )}
+                                <div>
+                                    <h3 className="text-sm text-gray-500">Device</h3>
+                                    <p className="font-medium">{customerDetails.deviceType}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm text-gray-500">App Version</h3>
+                                    <p className="font-medium">{customerDetails.appVersion}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm text-gray-500">OS Version</h3>
+                                    <p className="font-medium">{customerDetails.osVersion}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm text-gray-500">Last Login</h3>
+                                    <p className="font-medium">{customerDetails.lastLogin}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm text-gray-500">Last App Update</h3>
+                                    <p className="font-medium">{customerDetails.lastAppUpdate}</p>
+                                </div>
+                                <button
+                                    className="w-full text-blue-600 hover:underline text-sm text-left mt-2"
+                                    onClick={() => console.log('View interaction history')}
+                                >
+                                    View interaction history →
+                                </button>
                             </div>
-                        ))}
+                        </div>
+
+                        {/* Case Notes Section */}
+                        <div>
+                            <h2 className="text-lg font-bold mb-4">Case Notes</h2>
+                            <textarea
+                                className="w-full h-[calc(100vh-36rem)] p-2 border rounded-md resize-none"
+                                placeholder="Enter case notes here..."
+                                value={caseNotes}
+                                onChange={(e) => setCaseNotes(e.target.value)}
+                            />
+                        </div>
                     </div>
-                </div>
+                </>
             )}
-
-            {/* Center - Customer App */}
-            <div className="flex-1 flex flex-col items-center bg-gray p-4">
-                <button
-                    onClick={isRecording ? stopRecording : startRecording}
-                    className={`mb-4 px-4 py-2 rounded-md text-sm font-medium ${isRecording
-                        ? 'bg-red-500 text-white hover:bg-red-600'
-                        : 'bg-green text-white hover:bg-green'
-                        }`}
-                >
-                    {isRecording ? 'Stop Recording' : 'Record Journey'}
-                </button>
-                <div className="w-[390px] h-[844px] bg-white rounded-3xl overflow-hidden shadow-2xl">
-                    <SimulatorProvider
-                        onInteraction={() => {
-                            if (isRecording) {
-                                addJourneyStep();
-                            }
-                        }}
-                    >
-                        <GuidedJourneyProvider>
-                            <Outlet />
-                        </GuidedJourneyProvider>
-                    </SimulatorProvider>
-                </div>
-            </div>
-
-            {/* Right Panel - Customer Details and Case Notes */}
-            <div className="w-72 bg-white p-4 border-l border-gray-200 overflow-y-auto">
-                {/* Customer Details Section */}
-                <div className="mb-6">
-                    <h2 className="text-lg font-bold mb-4">Customer Details</h2>
-                    <div className="space-y-3">
-                        <div>
-                            <h3 className="text-sm text-gray-500">Name</h3>
-                            <p className="font-medium">{customerDetails.name}</p>
-                        </div>
-                        <div>
-                            <h3 className="text-sm text-gray-500">Device</h3>
-                            <p className="font-medium">{customerDetails.deviceType}</p>
-                        </div>
-                        <div>
-                            <h3 className="text-sm text-gray-500">App Version</h3>
-                            <p className="font-medium">{customerDetails.appVersion}</p>
-                        </div>
-                        <div>
-                            <h3 className="text-sm text-gray-500">OS Version</h3>
-                            <p className="font-medium">{customerDetails.osVersion}</p>
-                        </div>
-                        <div>
-                            <h3 className="text-sm text-gray-500">Last Login</h3>
-                            <p className="font-medium">{customerDetails.lastLogin}</p>
-                        </div>
-                        <div>
-                            <h3 className="text-sm text-gray-500">Last App Update</h3>
-                            <p className="font-medium">{customerDetails.lastAppUpdate}</p>
-                        </div>
-                        <button
-                            className="w-full text-blue-600 hover:underline text-sm text-left mt-2"
-                            onClick={() => console.log('View interaction history')}
-                        >
-                            View interaction history →
-                        </button>
-                    </div>
-                </div>
-
-                {/* Case Notes Section */}
-                <div>
-                    <h2 className="text-lg font-bold mb-4">Case Notes</h2>
-                    <textarea
-                        className="w-full h-[calc(100vh-36rem)] p-2 border rounded-md resize-none"
-                        placeholder="Enter case notes here..."
-                        value={caseNotes}
-                        onChange={(e) => setCaseNotes(e.target.value)}
-                    />
-                </div>
-            </div>
         </div>
     );
 };
