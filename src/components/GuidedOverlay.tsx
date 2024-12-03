@@ -1,37 +1,65 @@
+import Joyride, { Step, CallBackProps } from 'react-joyride';
 import { useGuidedJourney } from '../contexts/GuidedJourneyContext';
 
 const GuidedOverlay = () => {
-  const { endJourney, currentStep } = useGuidedJourney();
+  const { endJourney, currentJourney } = useGuidedJourney();
 
-  const instructions = {
+  const journeySteps: Record<string, Step[]> = {
     'view-pin': [
       {
-        text: 'First, tap on the Cards tab in the bottom navigation bar',
-        target: 'footer-cards'
+        target: '.support-button',
+        content: 'First, tap on the Cards tab in the bottom navigation bar',
+        disableBeacon: true
+      },
+      {
+        target: '.view-pin-button',
+        content: 'Next, tap on the View PIN option',
+      },
+      {
+        target: '.pin-verification',
+        content: 'Verify your identity to view your PIN',
       }
-      // Add more steps as needed
+    ],
+    'replace-card': [
+      {
+        target: '.support-card-management-card',
+        content: 'First, tap on Card Management',
+      },
+      {
+        target: '.lost-stolen-button',
+        content: 'Then select Lost or Stolen Card option',
+      }
     ]
   };
 
+  console.log('GuidedOverlay rendered with journey:', currentJourney);
+  console.log('Steps:', journeySteps[currentJourney] || []);
+
+  const handleJoyrideCallback = (data: CallBackProps) => {
+    console.log(data)
+    console.log('HI!')
+    const { status, type } = data;
+    if (status === 'finished' || status === 'skipped') {
+      endJourney();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-40 pointer-events-none">
-      {/* Semi-transparent overlay */}
-      <div className="absolute inset-0 bg-black/60" />
-      
-      {/* Instruction panel */}
-      <div className="absolute top-0 left-0 right-0 bg-white p-4 pointer-events-auto">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex space-x-2">
-            <button onClick={() => {/* Toggle dim */}}>🌙</button>
-            <button onClick={() => {/* Text-to-speech */}}>🔊</button>
-          </div>
-          <button onClick={endJourney}>✕</button>
-        </div>
-        <p className="text-center">
-          {instructions['view-pin'][currentStep]?.text}
-        </p>
-      </div>
-    </div>
+    <Joyride
+      steps={journeySteps[currentJourney] || []}
+      continuous
+      showProgress
+      showSkipButton
+      run={true}
+      debug={true}
+      styles={{
+        options: {
+          primaryColor: '#000',
+          zIndex: 1000,
+        },
+      }}
+      callback={handleJoyrideCallback}
+    />
   );
 };
 
