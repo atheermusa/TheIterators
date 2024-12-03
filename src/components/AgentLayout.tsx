@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import { GuidedJourneyProvider } from '../contexts/GuidedJourneyContext';
-import { SimulatorProvider } from '../contexts/SimulatorContext';
+// import { Outlet } from 'react-router-dom';
+// import { GuidedJourneyProvider } from '../contexts/GuidedJourneyContext';
+// import { SimulatorProvider } from '../contexts/SimulatorContext';
 
 interface Journey {
     id: string;
@@ -44,6 +44,8 @@ const AgentLayout = () => {
         isActive: true,
         isSearching: false
     });
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     // Mocked customer details
     const customerDetails: CustomerDetails = {
@@ -313,6 +315,30 @@ const AgentLayout = () => {
         setHasCompletedRecording(false);
     };
 
+    const handleViewCallSummary = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const mockScreenshots = [
+        "/screenshots/home.png",
+        "/screenshots/cards.png",
+        "/screenshots/view-pin.png",
+        "/screenshots/pin.png",
+    ];
+
+    const handleNextImage = () => {
+        if (currentImageIndex < mockScreenshots.length - 1) {
+            setCurrentImageIndex(currentImageIndex + 1);
+            if (isRecording) {
+                addJourneyStep();
+            }
+        }
+    };
+
     return (
         <div className="flex h-screen bg-gray-100">
             {caseStatus.isSearching ? (
@@ -337,7 +363,16 @@ const AgentLayout = () => {
                 <>
                     {/* Left Panel */}
                     <div className="w-72 bg-white p-4 border-r border-gray-200 overflow-y-auto">
-                        <h2 className="text-lg font-bold mb-4">Available Journeys</h2>
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-bold">Available Journeys</h2>
+                            <button
+                                className="px-3 py-1 bg-purple-600 text-white rounded-md text-sm hover:bg-purple-700 flex items-center gap-1"
+                                onClick={() => console.log('Generate AI Journey')}
+                            >
+                                <span>✨</span>
+                                Generate
+                            </button>
+                        </div>
                         <input
                             type="text"
                             placeholder="Search journeys..."
@@ -345,6 +380,23 @@ const AgentLayout = () => {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
+
+                        {/* Suggested Journeys Section */}
+                        <div className="mb-6">
+                            <h3 className="text-sm font-medium text-gray-500 mb-2">Suggested Journeys</h3>
+                            <div className="space-y-2">
+                                <div className="p-3 border rounded-md bg-purple-50 border-purple-200">
+                                    <h4 className="font-medium">View PIN Journey</h4>
+                                    <p className="text-sm text-gray-600">Based on customer's recent card activation</p>
+                                </div>
+                                <div className="p-3 border rounded-md bg-purple-50 border-purple-200">
+                                    <h4 className="font-medium">Set Up Direct Debit</h4>
+                                    <p className="text-sm text-gray-600">Customer mentioned bill payments</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 className="text-sm font-medium text-gray-500 mb-2">All Journeys</h3>
                         <div className="space-y-2">
                             {filteredJourneys.map(journey => (
                                 <div
@@ -431,7 +483,7 @@ const AgentLayout = () => {
                         </div>
                     )}
 
-                    {/* Center - Customer App */}
+                    {/* Center - Customer App Screenshots */}
                     <div className="flex-1 flex flex-col items-center bg-gray p-4">
                         <div className="flex gap-2 mb-4">
                             <button
@@ -443,25 +495,14 @@ const AgentLayout = () => {
                             >
                                 {isRecording ? 'Stop Recording' : 'Record Journey'}
                             </button>
-                            <button
-                                onClick={handleCompleteCase}
-                                className="px-4 py-2 text-black rounded-md hover:underline text-sm font-medium"
-                            >
-                                Complete Case
-                            </button>
                         </div>
                         <div className="w-[390px] h-[844px] bg-white rounded-3xl overflow-hidden shadow-2xl">
-                            <SimulatorProvider
-                                onInteraction={() => {
-                                    if (isRecording) {
-                                        addJourneyStep();
-                                    }
-                                }}
-                            >
-                                <GuidedJourneyProvider>
-                                    <Outlet />
-                                </GuidedJourneyProvider>
-                            </SimulatorProvider>
+                            <img
+                                src={mockScreenshots[currentImageIndex]}
+                                alt={`Screen ${currentImageIndex + 1}`}
+                                className="w-full h-full object-cover cursor-pointer"
+                                onClick={handleNextImage}
+                            />
                         </div>
                     </div>
 
@@ -508,14 +549,76 @@ const AgentLayout = () => {
                         <div>
                             <h2 className="text-lg font-bold mb-4">Case Notes</h2>
                             <textarea
-                                className="w-full h-[calc(100vh-36rem)] p-2 border rounded-md resize-none"
+                                className="w-full h-[calc(100vh-46rem)] p-2 border rounded-md resize-none"
                                 placeholder="Enter case notes here..."
                                 value={caseNotes}
                                 onChange={(e) => setCaseNotes(e.target.value)}
                             />
+                            <div className="space-y-2 mt-4">
+                                <button
+                                    className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 flex items-center justify-center gap-2"
+                                    onClick={handleViewCallSummary}
+                                >
+                                    <span>📝</span>
+                                    View Call Summary
+                                </button>
+                                <button
+                                    onClick={handleCompleteCase}
+                                    className="w-full py-2 px-4 bg-black text-white rounded-md hover:bg-gray-800 flex items-center justify-center gap-2"
+                                >
+                                    <span>✓</span>
+                                    Complete Case
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </>
+            )}
+
+            {/* Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                        <h2 className="text-xl font-bold mb-4">Call Summary</h2>
+                        <p className="text-gray-700 mb-4">
+                            The customer wants to know how to retrieve their forgotten PIN using the app.
+                        </p>
+
+                        {/* Audio Player Section */}
+                        <div className="border-t pt-4 mt-4">
+                            <h3 className="font-medium mb-3">Call Recording</h3>
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <button className="w-8 h-8 flex items-center justify-center bg-black text-white rounded-full">
+                                        ▶️
+                                    </button>
+                                    <div className="text-sm">
+                                        <div className="font-medium">Call Recording #1234</div>
+                                        <div className="text-gray-500">Duration: 3:45</div>
+                                    </div>
+                                </div>
+
+                                {/* Progress Bar */}
+                                <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
+                                    <div className="bg-black h-1.5 rounded-full w-1/3"></div>
+                                </div>
+
+                                {/* Time Indicators */}
+                                <div className="flex justify-between text-xs text-gray-500">
+                                    <span>1:15</span>
+                                    <span>3:45</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={closeModal}
+                            className="w-full py-2 px-4 bg-black text-white rounded-md hover:bg-gray-800 mt-4"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
             )}
         </div>
     );
