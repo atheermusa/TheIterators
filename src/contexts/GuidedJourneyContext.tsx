@@ -17,10 +17,16 @@ interface GuidedJourneyContextType {
 
 const TOUR_COMPLETED_KEY = 'guided_tour_completed';
 const API_BASE_URL = import.meta.env.VITE_APP_BE;
+const POLLING_INTERVAL = 5000; // 5 seconds
 
 interface JourneyData {
   steps: Step[];
   // Add other fields from your API response here
+}
+
+interface PollResponse {
+  active: string;
+  // Add other fields that might come from the API
 }
 
 const journeySteps: Record<string, Step[]> = {
@@ -68,6 +74,39 @@ export const GuidedJourneyProvider = ({ children }: { children: ReactNode }) => 
   const [hasTakenTour, setHasTakenTour] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const pollActiveStatus = async () => {
+    try {
+      const response = await fetch(`https://apphelp-cugtbgavhge7eqbn.uksouth-01.azurewebsites.net/status/adam/journey/adam`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch active status');
+      }
+      const data: PollResponse = await response.json();
+      console.log('data', data);
+      if (data.active === 'true') {
+        setIsGuided(true);
+        startJourney('view-pin');
+      }
+
+      // If active status becomes true and we're not already in a journey,
+      // automatically start the view-pin journey
+      if (data.active && isGuided) {
+      }
+    } catch (err) {
+      console.error('Error polling active status:', err);
+      // Don't set error state here to avoid UI disruption
+    }
+  };
+
+  useEffect(() => {
+    // Start polling when component mounts
+    console.log('POLLING!')
+    const intervalId = setInterval(pollActiveStatus, POLLING_INTERVAL);
+
+    // Cleanup interval when component unmounts
+    return () => clearInterval(intervalId);
+  }, [isGuided]); // Add isGuided as dependency to prevent starting multiple journeys
 
   const fetchJourneyData = async (type: string): Promise<JourneyData> => {
     try {
