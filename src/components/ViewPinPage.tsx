@@ -60,7 +60,8 @@ const ViewPinPage = () => {
 
         {/* Show PIN Button */}
         <button
-          className="w-full bg-black text-white py-4 rounded-lg"
+          data-testid="show-pin-button"
+          className="w-full bg-black text-white py-4 rounded-lg view-pin-button"
           onClick={() => setShowPin(true)}
         >
           Show PIN

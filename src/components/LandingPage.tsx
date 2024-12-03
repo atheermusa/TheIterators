@@ -64,7 +64,7 @@ const LandingPage = () => {
           />
         </div>
         <button
-          className="mt-4 bg-green text-white py-2 px-4 rounded w-full"
+          className="mt-4 bg-green text-white py-2 px-4 rounded w-full support-page-button"
           onClick={() => navigate("/support")}
         >
           Go to Support Page

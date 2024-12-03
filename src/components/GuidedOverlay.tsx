@@ -1,52 +1,61 @@
-import Joyride, { Step, CallBackProps } from 'react-joyride';
+import Joyride, { CallBackProps, STATUS } from 'react-joyride';
 import { useGuidedJourney } from '../contexts/GuidedJourneyContext';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const GuidedOverlay = () => {
-  const { endJourney, journeyType } = useGuidedJourney();
+  const { endJourney, journeyType, steps, stepIndex, setStepIndex, markTourComplete } = useGuidedJourney();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const journeySteps: Record<string, Step[]> = {
-    'view-pin': [
-      {
-        target: '.support-button',
-        content: 'First, tap on the Cards tab in the bottom navigation bar',
-        disableBeacon: true
-      },
-      {
-        target: '.view-pin-button',
-        content: 'Next, tap on the View PIN option',
-      },
-      {
-        target: '.pin-verification',
-        content: 'Verify your identity to view your PIN',
+  useEffect(() => {
+    // Reset step index when route changes
+    if (journeyType === 'view-pin') {
+      switch (location.pathname) {
+        case '/':
+          setStepIndex(0);
+          break;
+        case '/cards':
+          setStepIndex(1);
+          break;
+        case '/view-pin':
+          setStepIndex(2);
+          break;
       }
-    ],
-    'replace-card': [
-      {
-        target: '.support-card-management-card',
-        content: 'First, tap on Card Management',
-      },
-      {
-        target: '.lost-stolen-button',
-        content: 'Then select Lost or Stolen Card option',
-      }
-    ]
-  };
-
-  console.log('GuidedOverlay rendered with journey:', journeyType);
-  console.log('Steps:', journeySteps[journeyType!] || []);
+    }
+  }, [location.pathname, journeyType, setStepIndex]);
 
   const handleJoyrideCallback = (data: CallBackProps) => {
-    console.log(data);
-    const { status, type } = data;
-    if (status === 'finished' || status === 'skipped') {
+    const { action, index, status, type } = data;
+    console.log({ data });
+
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      markTourComplete();
       endJourney();
+      return;
+    }
+
+    if (type === 'step:after' && journeyType === 'view-pin') {
+      switch (index) {
+        case 0:
+          setTimeout(() => {
+            navigate('/cards');
+          }, 500);
+          break;
+        case 1:
+          setTimeout(() => {
+            navigate('/view-pin');
+          }, 500);
+          break;
+      }
     }
   };
 
   return (
     <Joyride
-      steps={journeySteps[journeyType!] || []}
-      continuous
+      steps={steps}
+      stepIndex={stepIndex}
+      continuous={true}
       showProgress
       showSkipButton
       run={true}

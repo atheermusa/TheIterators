@@ -6,18 +6,15 @@ import SupportPage from './SupportPage';
 import CardPage from './CardPage';
 import ViewPinPage from './ViewPinPage';
 import NotFoundPage from './NotFoundPage';
-import GuidedOverlay from './GuidedOverlay';
 import FooterNav from './FooterNav';
 import { useGuidedJourney } from '../contexts/GuidedJourneyContext';
 
 const AppRoutes = () => {
   const { isGuided } = useGuidedJourney();
-  // const location = useLocation();
-  // const showFooter = !location.pathname.startsWith('/agent');
-
+  console.log('isGuided', isGuided);
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 relative">
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1">
         <Routes>
           {/* Customer Routes */}
           <Route element={<CustomerLayout />}>
@@ -37,7 +34,6 @@ const AppRoutes = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
-        {isGuided && <GuidedOverlay />}
       </div>
       <FooterNav />
     </div>

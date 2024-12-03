@@ -38,7 +38,8 @@ const CardPage = () => {
             <span className="text-sm text-center">Card details</span>
           </button>
           <button
-            className="flex flex-col items-center view-pin-button"
+            data-testid="view-pin-button"
+            className="flex flex-col items-center view-pin"
             onClick={() => navigate('/view-pin')}
           >
             <div className="w-12 h-12 rounded-full border flex items-center justify-center mb-2">
