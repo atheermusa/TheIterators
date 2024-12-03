@@ -126,7 +126,6 @@ const SupportPage = () => {
             </div>
           </div>
         </div>
-        <FooterNav />
       </div>
       <JourneyDialog
         isOpen={showDialog}

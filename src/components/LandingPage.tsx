@@ -70,7 +70,6 @@ const LandingPage = () => {
           Go to Support Page
         </button>
       </div>
-      <FooterNav />
     </div>
   );
 };

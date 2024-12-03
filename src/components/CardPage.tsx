@@ -72,7 +72,6 @@ const CardPage = () => {
           </button>
         </div>
       </div>
-      <FooterNav activeTab="Cards" />
     </div>
   );
 };

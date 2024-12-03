@@ -2,7 +2,7 @@ import Joyride, { Step, CallBackProps } from 'react-joyride';
 import { useGuidedJourney } from '../contexts/GuidedJourneyContext';
 
 const GuidedOverlay = () => {
-  const { endJourney, currentJourney } = useGuidedJourney();
+  const { endJourney, journeyType } = useGuidedJourney();
 
   const journeySteps: Record<string, Step[]> = {
     'view-pin': [
@@ -31,8 +31,9 @@ const GuidedOverlay = () => {
       }
     ]
   };
-  console.log('GuidedOverlay rendered with journey:', currentJourney);
-  console.log('Steps:', journeySteps[currentJourney ?? ''] || []);
+
+  console.log('GuidedOverlay rendered with journey:', journeyType);
+  console.log('Steps:', journeySteps[journeyType!] || []);
 
   const handleJoyrideCallback = (data: CallBackProps) => {
     console.log(data);
@@ -44,7 +45,7 @@ const GuidedOverlay = () => {
 
   return (
     <Joyride
-      steps={journeySteps[currentJourney ?? ''] || []}
+      steps={journeySteps[journeyType!] || []}
       continuous
       showProgress
       showSkipButton

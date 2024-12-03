@@ -12,14 +12,13 @@ const FooterNav = ({ activeTab = "Home" }: { activeTab?: string }) => {
     { label: "Cards", icon: "💳", path: "/cards", id: "cards-button" },
     { label: "Support", icon: "🛠️", path: "/support", id: "support-button" }
   ];
-
+  console.log('activeTab', activeTab);
   return (
     <nav className="flex justify-around items-center bg-white py-2 border-t">
       {navItems.map((item) => (
         <button
           key={item.label}
-          className={`flex flex-col items-center gap-1 ${item.id}
-            }`}
+          className={`flex flex-col items-center gap-1 ${item.id}`}
           onClick={() => navigate(item.path)}
         >
           <span className="text-xl">{item.icon}</span>
